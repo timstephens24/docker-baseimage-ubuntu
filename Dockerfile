@@ -58,7 +58,7 @@ RUN echo "**** Ripped from Ubuntu Docker Logic ****" \
   && apt-get update \
   && apt-get install -y apt-utils locales \
   && echo "**** install packages ****" \
-  && apt-get install -y --no-install-recommends at beignet-opencl-icd ca-certificates curl git gnupg i965-va-driver intel-media-va-driver-non-free jq libfontconfig1 libfreetype6 libssl1.1 mesa-va-drivers ocl-icd-libopencl1 tzdata udev unrar wget \
+  && apt-get install -y --no-install-recommends at beignet-opencl-icd ca-certificates curl git gnupg i965-va-driver intel-media-va-driver-non-free jq libfontconfig1 libfreetype6 libmfx libssl1.1 mesa-va-drivers ocl-icd-libopencl1 tzdata udev unrar wget \
   && echo "**** generate locale ****" \
   && locale-gen en_US.UTF-8 \
   && echo "**** create abc user and make our folders ****" \
