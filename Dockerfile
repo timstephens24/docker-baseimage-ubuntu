@@ -17,9 +17,6 @@ RUN echo "**** installing base ubuntu ****" \
 # Runtime stage
 FROM scratch
 COPY --from=rootfs-stage /root-out/ /
-ARG BUILD_DATE
-ARG VERSION
-LABEL build_version="stephens.cc version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="timstephens24"
 
 # set version for s6 overlay
@@ -61,7 +58,7 @@ RUN echo "**** Ripped from Ubuntu Docker Logic ****" \
   && apt-get update \
   && apt-get install -y apt-utils locales \
   && echo "**** install packages ****" \
-  && apt-get install -y --no-install-recommends at beignet-opencl-icd ca-certificates curl gnupg i965-va-driver intel-media-va-driver-non-free jq libfontconfig1 libfreetype6 libssl1.1 mesa-va-drivers ocl-icd-libopencl1 tzdata udev unrar wget \
+  && apt-get install -y --no-install-recommends at beignet-opencl-icd ca-certificates curl git gnupg i965-va-driver intel-media-va-driver-non-free jq libfontconfig1 libfreetype6 libssl1.1 mesa-va-drivers ocl-icd-libopencl1 tzdata udev unrar wget \
   && echo "**** generate locale ****" \
   && locale-gen en_US.UTF-8 \
   && echo "**** create abc user and make our folders ****" \
@@ -72,20 +69,11 @@ RUN echo "**** Ripped from Ubuntu Docker Logic ****" \
   && echo "**** cleanup ****" \
   && apt-get clean \
   && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* \
-  && curl -o /tmp/intel-gmmlib.deb -L \
-    https://github.com/intel/compute-runtime/releases/download/20.48.18558/intel-gmmlib_20.3.2_amd64.deb \
-  && curl -o /tmp/intel-igc-core.deb -L \
-    https://github.com/intel/intel-graphics-compiler/releases/download/igc-1.0.5699/intel-igc-core_1.0.5699_amd64.deb \
-  && curl -o /tmp/intel-igc-opencl.deb -L \
-    https://github.com/intel/intel-graphics-compiler/releases/download/igc-1.0.5699/intel-igc-opencl_1.0.5699_amd64.deb \
-  && curl -o /tmp/intel-opencl.deb -L \
-    https://github.com/intel/compute-runtime/releases/download/20.48.18558/intel-opencl_20.48.18558_amd64.deb \
-  && curl -o /tmp/intel-ocloc.deb -L \
-    https://github.com/intel/compute-runtime/releases/download/20.48.18558/intel-ocloc_20.48.18558_amd64.deb \
-  && curl -o /tmp/intel-level-zero-gpu.deb -L \
-    https://github.com/intel/compute-runtime/releases/download/20.48.18558/intel-level-zero-gpu_1.0.18558_amd64.deb \
-  && dpkg -i /tmp/*.deb \
-  && rm /tmp/*.deb
+  && COMP_RT_RELEASE=$(curl -sX GET "https://api.github.com/repos/intel/compute-runtime/releases/latest" | jq -r '.tag_name') \
+  && COMP_RT_URLS=$(curl -sX GET "https://api.github.com/repos/intel/compute-runtime/releases/tags/${COMP_RT_RELEASE}" | jq -r '.body' | grep wget | sed 's|wget ||g') \
+  && mkdir -p /opencl-intel \
+  && for i in ${COMP_RT_URLS}; do i=$(echo ${i} | tr -d '\r'); echo "**** downloading ${i} ****"; curl -o "/opencl-intel/$(basename ${i})" -L "${i}"; done \
+  && dpkg -i /opencl-intel/*.deb
 
 # add local files
 COPY root/ /
