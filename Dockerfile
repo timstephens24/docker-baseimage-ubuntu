@@ -20,12 +20,13 @@ COPY --from=rootfs-stage /root-out/ /
 LABEL maintainer="timstephens24"
 
 # set version for s6 overlay
-ARG OVERLAY_VERSION="v2.1.0.2"
+ARG OVERLAY_VERSION="v2.2.0.3"
 ARG OVERLAY_ARCH="amd64"
 
 # add s6 overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/
 RUN chmod +x /tmp/s6-overlay-${OVERLAY_ARCH}-installer && /tmp/s6-overlay-${OVERLAY_ARCH}-installer / && rm /tmp/s6-overlay-${OVERLAY_ARCH}-installer
+COPY patch/ /tmp/patch
 
 # set environment variables
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -58,7 +59,7 @@ RUN echo "**** Ripped from Ubuntu Docker Logic ****" \
   && apt-get update \
   && apt-get install -y apt-utils locales \
   && echo "**** install packages ****" \
-  && apt-get install -y --no-install-recommends at beignet-opencl-icd ca-certificates curl git gnupg i965-va-driver intel-media-va-driver-non-free jq libfontconfig1 libfreetype6 libmfx1 libssl1.1 mesa-va-drivers ocl-icd-libopencl1 tzdata udev unrar wget \
+  && apt-get install -y --no-install-recommends at beignet-opencl-icd ca-certificates curl git gnupg i965-va-driver intel-media-va-driver-non-free jq libfontconfig1 libfreetype6 libmfx1 libssl1.1 mesa-va-drivers ocl-icd-libopencl1 patch tzdata udev unrar wget \
   && echo "**** generate locale ****" \
   && locale-gen en_US.UTF-8 \
   && echo "**** create abc user and make our folders ****" \
@@ -66,6 +67,7 @@ RUN echo "**** Ripped from Ubuntu Docker Logic ****" \
   && usermod -G users abc \
   && mkdir -p /app /config /defaults \
   && mv /usr/bin/with-contenv /usr/bin/with-contenvb \
+  && patch -u /etc/s6/init/init-stage2 -i /tmp/patch/etc/s6/init/init-stage2.patch \
   && echo "**** cleanup ****" \
   && apt-get clean \
   && rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* \
