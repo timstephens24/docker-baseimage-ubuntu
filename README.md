@@ -5,4 +5,4 @@
 [appurl]: https://cloud-images.ubuntu.com
 [dockerfileurl]: https://github.com/timstephens24/docker-baseimage-ubuntu/blob/master/Dockerfile
 
-A custom base image built with [Ubuntu cloud image][appurl] and [S6 overlay](https://github.com/just-containers/s6-overlay)..
+A custom base image built with [Ubuntu cloud image][appurl] and [S6 overlay](https://github.com/just-containers/s6-overlay). Slightly modified from the folks over at Linuxserver.
