@@ -52,7 +52,7 @@ S6_VERBOSITY=1
 COPY sources.list /etc/apt/
 
 RUN echo "**** Ripped from Ubuntu Docker Logic ****" \
-  &&  set -xe \
+  && set -xe \
   && echo '#!/bin/sh' > /usr/sbin/policy-rc.d \
   && echo 'exit 101' >> /usr/sbin/policy-rc.d \
   && chmod +x /usr/sbin/policy-rc.d \
