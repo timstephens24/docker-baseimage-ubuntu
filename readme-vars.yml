@@ -4,7 +4,7 @@
 project_name: baseimage-ubuntu
 full_custom_readme: |
   {% raw -%}
-  [timstephens24url]: https://stephens.cc
+  [timurl]: https://stephens.cc
   [appurl]: https://cloud-images.ubuntu.com
   [dockerfileurl]: https://github.com/timstephens24/docker-baseimage-ubuntu/blob/master/Dockerfile
 

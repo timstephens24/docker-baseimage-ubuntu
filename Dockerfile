@@ -37,7 +37,7 @@ COPY --from=rootfs-stage /root-out/ /
 ARG BUILD_DATE
 ARG VERSION
 LABEL build_version="stephens.cc version:- ${VERSION} Build-date:- ${BUILD_DATE}"
-LABEL maintainer="timstephens24"
+LABEL maintainer="tim@stephens.cc"
 
 # set environment variables
 ARG DEBIAN_FRONTEND="noninteractive"
